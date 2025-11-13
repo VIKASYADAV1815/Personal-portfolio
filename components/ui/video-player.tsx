@@ -119,6 +119,11 @@ export const VideoPlayer = (
       ]
     : [];
   const [thumbIndex, setThumbIndex] = useState(0);
+  const [usePoster, setUsePoster] = useState(!!poster);
+  React.useEffect(() => {
+    setUsePoster(!!poster);
+    setThumbIndex(0);
+  }, [poster, ytId]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -230,21 +235,31 @@ export const VideoPlayer = (
             onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); hideControls(); }}
           >
             {(() => {
-              const candidate = poster ?? ytThumbCandidates[thumbIndex];
+              const candidate = (usePoster && poster) ? poster : ytThumbCandidates[thumbIndex];
               return candidate ? (
                 <img
                   src={candidate}
                   alt="Video poster"
                   className="w-full h-full object-cover"
                   onError={() => {
-                    setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                    if (usePoster) {
+                      setUsePoster(false);
+                      setThumbIndex(0);
+                    } else {
+                      setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                    }
                   }}
                   onLoad={(e) => {
                     const w = e.currentTarget.naturalWidth;
                     const h = e.currentTarget.naturalHeight;
                     // If YouTube returns a tiny placeholder (e.g., 120x90), advance to next candidate
                     if (w <= 200 || h <= 120) {
-                      setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                      if (usePoster) {
+                        setUsePoster(false);
+                        setThumbIndex(0);
+                      } else {
+                        setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                      }
                     }
                   }}
                 />
