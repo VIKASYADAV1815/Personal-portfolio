@@ -15,7 +15,7 @@ import { Feature1 } from "./Feature/project1/feature-demo";
 import { Feature2 } from "./Feature/project2/feature-demo";
 import { VideoPlayer } from "@/components/ui/video-player";
 const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "https://youtu.be/Iun9uUHJKcc";
-const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "https://youtu.be/-SGM1p_QOZo";
+const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "https://youtu.be/1dh6KQUdUj8";
 const defaultPoster = "/placeholder.jpg";
 
 const blogifyDocumentation = "/BlogifyDoc.pdf";
@@ -441,6 +441,7 @@ const Projects = () => {
         <TracingBeam className="min-h-screen bg-[#121315]">
           <MainContent />
         </TracingBeam>
+        
       )}
       {showFeatures.visible && <FeatureModal />}
       <style>{globalStyles}</style>

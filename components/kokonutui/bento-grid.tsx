@@ -16,7 +16,13 @@ import Whatsapp from "@/components/kokonutui/whatsapp.png"
 import Github from "@/components/kokonutui/github.png"
 import Apple from "@/components/kokonutui/apple.png"
 import Photos from "@/components/kokonutui/photos.png"
-import Page from "@/app/contact/tech-demo"
+
+import dp from"@/components/assets/p2.jpg"
+
+
+
+import { SaveButton } from "@/components/contact-component/coffee"
+import { cn } from "@/lib/utils"
 
 
 
@@ -168,7 +174,7 @@ const ContactForm = () => {
           disabled={isLoading}
         />
         <Textarea
-          placeholder="Tell us about your project..."
+          placeholder="Write your message here..."
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           className="border-0 bg-white/10 text-white placeholder:text-slate-400 resize-none focus:bg-white/20"
@@ -269,10 +275,10 @@ const IPhoneMockup = () => {
                       {[
                         { icon: Instagram, label: "Instagram", color: "from-pink-500 to-purple-500", link: "https://www.instagram.com/vikasthatics/profilecard/?igsh=azU1eXhlMWJoZGZ4", embedLink: "https://www.instagram.com/vikasthatics/embed", imageUrl: "https://i.postimg.cc/dt2GkRL9/insta.jpg" },
                           { icon: Twitter, label: "Twitter", link: "https://www.instagram.com/vikasthatics/profilecard/?igsh=azU1eXhlMWJoZGZ4", embedLink: "https://www.instagram.com/vikasthatics/embed", imageUrl: "https://i.postimg.cc/tgKsBNmV/x.jpg" },
-                        { icon: Youtube, label: "YouTube", color: "from-red-500 to-red-700", link: "https://youtube.com", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Virat_Kohli_in_PMO_New_Delhi.jpg" },
+                        { icon: Youtube, label: "YouTube", color: "from-red-500 to-red-700", link: "https://youtube.com", imageUrl: "" },
                         { icon: Linkedin, label: "LinkedIn", color: "from-blue-500 to-blue-700", link: "https://www.linkedin.com/in/vikas-yadav-4510242a4/", imageUrl: "https://i.postimg.cc/yxjYCMs2/linkedin.jpg" },
-                        { icon: Message, label: "Message", color: "from-green-500 to-green-700", link: "mailto:example@email.com", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Virat_Kohli_in_PMO_New_Delhi.jpg" },
-                        { icon: Spotify, label: "Spotify", color: "from-gray-600 to-gray-800", link: "#", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Virat_Kohli_in_PMO_New_Delhi.jpg" },
+                        { icon: Message, label: "Message", color: "from-green-500 to-green-700", link: "mailto:vikas.web365@gmail.com" },
+                        { icon: Spotify, label: "Spotify", color: "from-gray-600 to-gray-800", link: "#", imageUrl: "" },
                         { icon: Apple, label: "Map", color: "from-gray-600 to-gray-800", link: "https://www.google.com/maps/place/Clement+Town,+Dehradun,+Uttarakhand/@30.2683118,77.9998997,8120m/data=!3m1!1e3!4m6!3m5!1s0x39092befa7608ead:0xe723fed2168f7a8d!8m2!3d30.2685607!4d78.0071039!16zL20vMGYxOXB2?entry=ttu&g_ep=EgoyMDI1MDgxMy4wIKXMDSoASAFQAw%3D%3Dhttps://earth.google.com/web/search/Dehradun,+Uttarakhand/@30.3287811,77.99509686,663.32280211a,23187.39847794d,35y,-120.33053138h,59.86845619t,0r/data=CiwiJgokCaL7xdUx2D5AEa5tC-1Tnj5AGWFzeTD2lFNAIQ2ol6JthFNAQgIIATIpCicKJQohMUJlZEktelI3R3k1MzRZM1p2WEhfNDQ5T2h0YnpYV1UxIAE6AwoBMEICCABKCAjWsa6tBhAB", imageUrl: "https://i.ibb.co/yn7DP5dS/screenrecorder-2025-08-18-00-55-37-806-0-t-Mx8-Ra-OL-1.gif" },
                         { icon: Photos, label: "Photos", color: "from-gray-600 to-gray-800", link: "#", imageUrl: "hhttps://i.pinimg.com/736x/71/48/83/71488314b1c64cb117a94d44b2686b2e.jpg" }
                       ].map((app, i) => (
@@ -934,11 +940,51 @@ export default function BentoGrid() {
             <CalendarComponent />
           </div>
           <div className="col-span-1 mt-1 md:col-start-9 md:col-span-5 md:row-start-6 border border-white/10 overflow-hidden rounded-2xl min-h-[120px] md:min-h-[140px] flex flex-col flex-1 pt-2 pb-3 md:mr-2 bg-[#161616]">
-            <div className="md:hidden lg:hidden mt-2 z-10">
-              <h1 className="text-2xl font-bold text-white text-center mb-3">TECH STACK</h1>
-              <p className="text-lg text-green-400 text-center">for last 1+ year</p>
+            <div className="mt-2 z-10 px-4">
+              <div className="text-center">
+                <motion.p
+                  className="text-slate-300 text-xs mb-3 leading-relaxed"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                >
+                  <span className="inline-block animate-pulse">⚡️</span>
+                  Code brewed with <span className="text-amber-300">chai</span>, chaos & pure hustle—fuel me!
+                  <br />
+                  <br />
+                  <span className="italic text-slate-400">
+                    “Tip me so I can afford both <span className="text-amber-300">coffee</span> AND therapy.”
+                  </span>
+                </motion.p>
+                <div className="flex justify-center gap-2 p-3 md:-mt-[1px] lg:-mt-[8px]">
+                  <div className="relative inline-block">
+                    <SaveButton
+                      text={{ idle: "Chai me up", saving: "Loading...", saved: "Thank you..." }}
+                      className="relative cursor-pointer rounded-xl border border-neutral-700 px-4 py-2 text-white"
+                      icon={<span className="text-base">🫖</span>}
+                      onSave={async () => {}}
+                      afterConfetti={() => window.open("https://buymeachai.ezee.li/vikas_yadav", "_blank")}
+                      unstyled
+                      contentClassName="text-[12px]"
+                    />
+                    <span className="pointer-events-none absolute inset-x-0 -bottom-px z-0 h-px w-full bg-gradient-to-s from-transparent via-emerald-500 to-transparent" />
+                  </div>
+                  <div className="relative inline-block">
+                    <SaveButton
+                      text={{ idle: "Buy me a coffee", saving: "Loading...", saved: "Thank you..." }}
+                      className="relative cursor-pointer rounded-xl border border-neutral-700 px-4 py-2 text-white"
+                      icon={<span className="text-base">☕</span>}
+                      onSave={async () => {}}
+                      afterConfetti={() => window.open("https://buymeacoffee.com/vikasyadav15", "_blank")}
+                      unstyled
+                      contentClassName="text-[12px]"
+                      minWidth={190}
+                    />
+                    <span className="pointer-events-none absolute inset-x-0 -bottom-px z-0 h-px w-full bg-gradient-to-s from-transparent via-sky-600 to-transparent" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <Page />
           </div>
           <div className="col-span-1 mt-2 md:col-start-5 md:col-span-8 md:row-start-8 md:row-span-2 border border-white/10 overflow-hidden rounded-2xl min-h-[300px] md:min-h-[270px]">
             <ParaComponent />

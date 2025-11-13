@@ -1,5 +1,5 @@
 "use client";
-import MetawareLogoParticles from "@/components/contact-component/demo1";
+import BentoGrid from "@/components/kokonutui/bento-grid";
 import { useLenis } from "@/hooks/useLenis";
 
 export default function HomePage() {
@@ -7,12 +7,8 @@ export default function HomePage() {
   useLenis();
   
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "#121315" }}>
-      <div className="container mx-auto px-4 py-10">
-        <div className="mx-auto w-full max-w-4xl h-[65vh] md:h-[70vh] rounded-2xl border border-slate-700/50 overflow-hidden">
-          <MetawareLogoParticles />
-        </div>
-      </div>
+    <main className="min-h-screen bg-background">
+      <BentoGrid />
     </main>
   )
 }

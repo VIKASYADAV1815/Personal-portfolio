@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
-import { GreetingAnimation } from "@/components/pre-loader/pre-loader";
+import { GreetingAnimation } from "@/components/pre-loader/greeting-loader";
 
 // ✅ Dynamic imports only for heavy components (no duplicate imports now)
 const HeroScrollDemo = dynamic(() => import("@/components/container-scroll-animation-demo"), { ssr: false });

@@ -19,33 +19,40 @@ export const TracingBeam = ({
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    // Map progress from when the container enters to when it fully leaves
     offset: ["start start", "end end"],
   });
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [svgHeight, setSvgHeight] = useState(0);
-  const [segment, setSegment] = useState(200);
 
   useEffect(() => {
-    const measure = () => {
-      if (contentRef.current) {
-        const h = contentRef.current.offsetHeight;
-        setSvgHeight(h);
-        // Gradient segment spans a portion of the path for visibility
-        setSegment(Math.max(120, Math.min(280, Math.floor(h / 3))));
-      }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    if (contentRef.current) {
+      setSvgHeight(contentRef.current.offsetHeight);
+      const ro = new ResizeObserver(() => {
+        if (contentRef.current) {
+          setSvgHeight(contentRef.current.offsetHeight);
+        }
+      });
+      ro.observe(contentRef.current);
+      return () => ro.disconnect();
+    }
   }, []);
 
-  // Move the gradient window along the full path as the user scrolls
-  const y1Raw = useTransform(scrollYProgress, [0, 1], [0, Math.max(0, svgHeight - segment)]);
-  const y1 = useSpring(y1Raw, { stiffness: 500, damping: 90 });
-  const y2Raw = useTransform(y1Raw, (v) => v + segment);
-  const y2 = useSpring(y2Raw, { stiffness: 500, damping: 90 });
+  const paddedHeight = Math.max(0, svgHeight) + 160;
+  const y1 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, paddedHeight]),
+    {
+      stiffness: 500,
+      damping: 90,
+    }
+  );
+  const y2 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, Math.max(50, paddedHeight - 200)]),
+    {
+      stiffness: 500,
+      damping: 90,
+    }
+  );
 
   return (
     <motion.div
@@ -105,14 +112,14 @@ export const TracingBeam = ({
           </motion.div>
 
           <svg
-            viewBox={`0 0 20 ${svgHeight}`}
+            viewBox={`0 0 20 ${paddedHeight}`}
             width="20"
-            height={svgHeight}
+            height={paddedHeight}
             className="mr-4 block"
             aria-hidden="true"
           >
             <motion.path
-              d={`M 1 0V -36 l 18 24 V ${svgHeight} l -18 24V ${svgHeight}`}
+              d={`M 1 0V -36 l 18 24 V ${paddedHeight * 0.8} l -18 24V ${paddedHeight}`}
               fill="none"
               stroke="#9091A0"
               strokeOpacity="0.16"
@@ -122,7 +129,7 @@ export const TracingBeam = ({
               }}
             ></motion.path>
             <motion.path
-              d={`M 1 0V -36 l 18 24 V ${svgHeight} l -18 24V ${svgHeight}`}
+              d={`M 1 0V -36 l 18 24 V ${paddedHeight * 0.8} l -18 24V ${paddedHeight}`}
               fill="none"
               stroke="url(#gradient)"
               strokeWidth="2.5"
