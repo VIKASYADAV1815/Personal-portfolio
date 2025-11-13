@@ -65,6 +65,27 @@ const toYouTubeEmbed = (url: string) => {
     return url;
   }
 };
+const getYouTubeId = (url: string): string | null => {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtu.be")) {
+      return u.pathname.replace("/", "");
+    }
+    if (u.hostname.includes("youtube.com")) {
+      if (u.pathname.startsWith("/embed/")) {
+        return u.pathname.split("/").pop() || null;
+      }
+      return u.searchParams.get("v");
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+const getYouTubeThumb = (url: string): string | undefined => {
+  const id = getYouTubeId(url);
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined;
+};
 
 export const VideoPlayer = (
   { src, type = "mp4", poster, className }: { src: string; type?: VideoType; poster?: string; className?: string }
@@ -162,6 +183,8 @@ export const VideoPlayer = (
       transition={{ type: "spring", stiffness: 300, damping: 10 }}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
+      onTouchStart={() => setShowControls(true)}
+      onTouchEnd={() => setShowControls(false)}
     >
       {type === "youtube" ? (
         isEmbedded ? (
@@ -179,11 +202,11 @@ export const VideoPlayer = (
             className="w-full h-full relative"
             onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); }}
           >
-            {poster ? (
-              <img src={poster} alt="Video poster" className="w-full h-full object-cover" />
+            {(() => { const displayPoster = poster ?? getYouTubeThumb(src); return displayPoster ? (
+              <img src={displayPoster} alt="Video poster" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-black/40" />
-            )}
+            ); })()}
           </button>
         )
       ) : (
@@ -231,7 +254,7 @@ export const VideoPlayer = (
       </AnimatePresence>
 
       <AnimatePresence>
-        {showControls && type === "mp4" && (
+        {(showControls || !isPlaying || (type === "youtube" && !isEmbedded)) && (
           <motion.div
             className="absolute bottom-0 mx-auto w-[90%] sm:max-w-lg left-0 right-0 p-2 sm:p-3 m-2 bg-[#11111198] backdrop-blur-md rounded-xl sm:rounded-2xl"
             initial={{ y: 20, opacity: 0, scale: 0.95 }}
@@ -262,7 +285,14 @@ export const VideoPlayer = (
                   whileTap={{ scale: 0.8 }}
                 >
                   <Button
-                    onClick={togglePlay}
+                    onClick={() => {
+                      if (type === "mp4") {
+                        togglePlay();
+                      } else if (!isEmbedded) {
+                        setIsEmbedded(true);
+                        setShowCenterPlayButton(false);
+                      }
+                    }}
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-[#111111d1] hover:text-white"
