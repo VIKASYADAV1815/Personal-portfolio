@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Loader } from "@/components/loader/loader";
+import { GreetingAnimation } from "@/components/pre-loader/greeting-loader";
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -11,34 +12,51 @@ interface PageTransitionProps {
 export default function PageTransition({ children }: PageTransitionProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [fadeGreeting, setFadeGreeting] = useState(false);
   const pathname = usePathname();
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const visitedPagesRef = useRef<Set<string>>(new Set());
+  const greetingTimeoutRef = useRef<{ fade?: NodeJS.Timeout; hide?: NodeJS.Timeout }>({});
 
   useEffect(() => {
-    // Check if this is the first visit to this page
+    const isHome = pathname === "/";
     const isFirstVisit = !visitedPagesRef.current.has(pathname);
-    
-    setIsLoading(true);
-    
-    // Clear any existing timeout
-    if (loadingTimeoutRef.current) {
-      clearTimeout(loadingTimeoutRef.current);
-    }
-    
-    // Set different timeout based on whether it's first visit or not
-    const timeout = isFirstVisit ? 2000 : 300; // 2s for first visit, 300ms for subsequent
-    
-    loadingTimeoutRef.current = setTimeout(() => {
+
+    if (isHome) {
+      setShowGreeting(true);
+      setFadeGreeting(false);
       setIsLoading(false);
-      setIsFirstLoad(false);
-      visitedPagesRef.current.add(pathname);
-    }, timeout);
+
+      if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+      if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
+      if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
+
+      greetingTimeoutRef.current.fade = setTimeout(() => setFadeGreeting(true), 3200);
+      greetingTimeoutRef.current.hide = setTimeout(() => {
+        setShowGreeting(false);
+        setIsFirstLoad(false);
+        visitedPagesRef.current.add(pathname);
+      }, 3800);
+    } else {
+      setShowGreeting(false);
+      setFadeGreeting(false);
+      setIsLoading(true);
+
+      if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+
+      const timeout = isFirstVisit ? 2000 : 300;
+      loadingTimeoutRef.current = setTimeout(() => {
+        setIsLoading(false);
+        setIsFirstLoad(false);
+        visitedPagesRef.current.add(pathname);
+      }, timeout);
+    }
 
     return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current);
-      }
+      if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+      if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
+      if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
     };
   }, [pathname]);
 
@@ -48,9 +66,11 @@ export default function PageTransition({ children }: PageTransitionProps) {
       if (loadingTimeoutRef.current) {
         clearTimeout(loadingTimeoutRef.current);
       }
-      setIsLoading(false);
-      setIsFirstLoad(false);
-      visitedPagesRef.current.add(pathname);
+      if (pathname !== "/") {
+        setIsLoading(false);
+        setIsFirstLoad(false);
+        visitedPagesRef.current.add(pathname);
+      }
     };
 
     // Check if document is already loaded
@@ -66,8 +86,13 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
   return (
     <>
-      {isLoading && !isFirstVisit && <Loader fullscreen backdrop />}
-      <div className={`transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}>
+      {showGreeting && (
+        <div className={`fixed inset-0 z-50 transition-opacity duration-600 ${fadeGreeting ? "opacity-0" : "opacity-100"}`}>
+          <GreetingAnimation />
+        </div>
+      )}
+      {isLoading && pathname !== "/" && !isFirstVisit && <Loader fullscreen backdrop />}
+      <div className={`transition-opacity duration-300 ${isLoading || showGreeting ? "opacity-0" : "opacity-100"}`}>
         {children}
       </div>
     </>
