@@ -14,8 +14,8 @@ import Lenis from '@studio-freight/lenis';
 import { Feature1 } from "./Feature/project1/feature-demo";
 import { Feature2 } from "./Feature/project2/feature-demo";
 import { VideoPlayer } from "@/components/ui/video-player";
-const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "";
-const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "";
+const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "https://youtu.be/Iun9uUHJKcc";
+const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "https://youtu.be/-SGM1p_QOZo";
 const defaultPoster = "/placeholder.jpg";
 
 const blogifyDocumentation = "/BlogifyDoc.pdf";
