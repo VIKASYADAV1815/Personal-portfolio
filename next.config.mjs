@@ -33,6 +33,15 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'i.ibb.co',
       },
+      // Allow YouTube thumbnail domains for any future next/image usage
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
     ],
   },
 
