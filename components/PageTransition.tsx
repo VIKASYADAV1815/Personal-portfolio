@@ -24,20 +24,35 @@ export default function PageTransition({ children }: PageTransitionProps) {
     const isFirstVisit = !visitedPagesRef.current.has(pathname);
 
     if (isHome) {
-      setShowGreeting(true);
-      setFadeGreeting(false);
-      setIsLoading(false);
+      let alreadyShown = false;
+      try {
+        alreadyShown = typeof window !== "undefined" && localStorage.getItem("greetShown") === "1";
+      } catch {}
 
-      if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
-      if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
-      if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
+      if (!alreadyShown) {
+        setShowGreeting(true);
+        setFadeGreeting(false);
+        setIsLoading(false);
 
-      greetingTimeoutRef.current.fade = setTimeout(() => setFadeGreeting(true), 3200);
-      greetingTimeoutRef.current.hide = setTimeout(() => {
+        if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+        if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
+        if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
+
+        greetingTimeoutRef.current.fade = setTimeout(() => setFadeGreeting(true), 3200);
+        greetingTimeoutRef.current.hide = setTimeout(() => {
+          setShowGreeting(false);
+          setIsFirstLoad(false);
+          visitedPagesRef.current.add(pathname);
+          try {
+            localStorage.setItem("greetShown", "1");
+          } catch {}
+        }, 3800);
+      } else {
         setShowGreeting(false);
-        setIsFirstLoad(false);
+        setFadeGreeting(false);
+        setIsLoading(false);
         visitedPagesRef.current.add(pathname);
-      }, 3800);
+      }
     } else {
       setShowGreeting(false);
       setFadeGreeting(false);
