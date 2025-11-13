@@ -101,15 +101,18 @@ export const VideoPlayer = (
   const [duration, setDuration] = useState(0);
   const [showCenterPlayButton, setShowCenterPlayButton] = useState(true);
   const [isEmbedded, setIsEmbedded] = useState(false);
+  const hideControls = () => setShowControls(false);
 
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
         setShowCenterPlayButton(true);
+        setShowControls(true);
       } else {
         videoRef.current.play();
         setShowCenterPlayButton(false);
+        setShowControls(false);
       }
       setIsPlaying(!isPlaying);
     }
@@ -184,7 +187,14 @@ export const VideoPlayer = (
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
       onTouchStart={() => setShowControls(true)}
-      onTouchEnd={() => setShowControls(false)}
+      onTouchEnd={() => {
+        // Hide controls shortly after touch when playing
+        if (isPlaying) {
+          setTimeout(() => setShowControls(false), 1200);
+        } else {
+          setShowControls(false);
+        }
+      }}
     >
       {type === "youtube" ? (
         isEmbedded ? (
@@ -200,10 +210,10 @@ export const VideoPlayer = (
         ) : (
           <button
             className="w-full h-full relative"
-            onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); }}
+            onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); hideControls(); }}
           >
-            {(() => { const displayPoster = poster ?? getYouTubeThumb(src); return displayPoster ? (
-              <img src={displayPoster} alt="Video poster" className="w-full h-full object-cover" />
+            {(() => { const id = getYouTubeId(src); const primary = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : undefined; const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined; const displayPoster = poster ?? primary ?? fallback; return displayPoster ? (
+              <img src={displayPoster} alt="Video poster" className="w-full h-full object-cover" onError={(e) => { if (fallback && (e.currentTarget.src !== fallback)) { e.currentTarget.src = fallback; } }} />
             ) : (
               <div className="w-full h-full bg-black/40" />
             ); })()}
@@ -216,6 +226,8 @@ export const VideoPlayer = (
           onTimeUpdate={handleTimeUpdate}
           src={src}
           onClick={togglePlay}
+          onPlay={() => { setIsPlaying(true); setShowCenterPlayButton(false); setShowControls(false); }}
+          onPause={() => { setIsPlaying(false); setShowCenterPlayButton(true); setShowControls(true); }}
           preload="metadata"
           {...(poster ? { poster } : {})}
         />
@@ -241,6 +253,7 @@ export const VideoPlayer = (
                 } else {
                   setIsEmbedded(true);
                   setShowCenterPlayButton(false);
+                  hideControls();
                 }
               }}
               variant="ghost"
