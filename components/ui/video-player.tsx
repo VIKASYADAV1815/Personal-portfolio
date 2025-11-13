@@ -88,7 +88,7 @@ const getYouTubeThumb = (url: string): string | undefined => {
 };
 
 export const VideoPlayer = (
-  { src, type = "mp4", poster, className }: { src: string; type?: VideoType; poster?: string; className?: string }
+  { src, type = "mp4", poster, className, minimal = false }: { src: string; type?: VideoType; poster?: string; className?: string; minimal?: boolean }
 ) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -102,6 +102,18 @@ export const VideoPlayer = (
   const [showCenterPlayButton, setShowCenterPlayButton] = useState(true);
   const [isEmbedded, setIsEmbedded] = useState(false);
   const hideControls = () => setShowControls(false);
+  const ytId = type === "youtube" ? getYouTubeId(src) : null;
+  const ytThumbCandidates = ytId
+    ? [
+        `https://i.ytimg.com/vi_webp/${ytId}/maxresdefault.webp`,
+        `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`,
+        `https://i.ytimg.com/vi/${ytId}/sddefault.jpg`,
+        `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`,
+        `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+        `https://i.ytimg.com/vi/${ytId}/default.jpg`,
+      ]
+    : [];
+  const [thumbIndex, setThumbIndex] = useState(0);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -212,11 +224,21 @@ export const VideoPlayer = (
             className="w-full h-full relative"
             onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); hideControls(); }}
           >
-            {(() => { const id = getYouTubeId(src); const primary = id ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : undefined; const fallback = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined; const displayPoster = poster ?? primary ?? fallback; return displayPoster ? (
-              <img src={displayPoster} alt="Video poster" className="w-full h-full object-cover" onError={(e) => { if (fallback && (e.currentTarget.src !== fallback)) { e.currentTarget.src = fallback; } }} />
-            ) : (
-              <div className="w-full h-full bg-black/40" />
-            ); })()}
+            {(() => {
+              const candidate = poster ?? ytThumbCandidates[thumbIndex];
+              return candidate ? (
+                <img
+                  src={candidate}
+                  alt="Video poster"
+                  className="w-full h-full object-cover"
+                  onError={() => {
+                    setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-black/40" />
+              );
+            })()}
           </button>
         )
       ) : (
@@ -266,112 +288,114 @@ export const VideoPlayer = (
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {(showControls || !isPlaying || (type === "youtube" && !isEmbedded)) && (
-          <motion.div
-            className="absolute bottom-0 mx-auto w-[90%] sm:max-w-lg left-0 right-0 p-2 sm:p-3 m-2 bg-[#11111198] backdrop-blur-md rounded-xl sm:rounded-2xl"
-            initial={{ y: 20, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 20, opacity: 0, scale: 0.95 }}
-            transition={{ 
-              duration: 0.4, 
-              type: "spring",
-              bounce: 0.35
-            }}
-          >
-            <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-              <span className="text-white text-xs sm:text-sm">
-                {formatTime(currentTime)}
-              </span>
-              <CustomSlider
-                value={progress}
-                onChange={handleSeek}
-                className="flex-1"
-              />
-              <span className="text-white text-xs sm:text-sm">{formatTime(duration)}</span>
-            </div>
+      {!minimal && (
+        <AnimatePresence>
+          {(showControls || !isPlaying || (type === "youtube" && !isEmbedded)) && (
+            <motion.div
+              className="absolute bottom-0 mx-auto w-[90%] sm:max-w-lg left-0 right-0 p-2 sm:p-3 m-2 bg-[#11111198] backdrop-blur-md rounded-xl sm:rounded-2xl"
+              initial={{ y: 20, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 20, opacity: 0, scale: 0.95 }}
+              transition={{ 
+                duration: 0.4, 
+                type: "spring",
+                bounce: 0.35
+              }}
+            >
+              <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                <span className="text-white text-xs sm:text-sm">
+                  {formatTime(currentTime)}
+                </span>
+                <CustomSlider
+                  value={progress}
+                  onChange={handleSeek}
+                  className="flex-1"
+                />
+                <span className="text-white text-xs sm:text-sm">{formatTime(duration)}</span>
+              </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.8 }}
-                >
-                  <Button
-                    onClick={() => {
-                      if (type === "mp4") {
-                        togglePlay();
-                      } else if (!isEmbedded) {
-                        setIsEmbedded(true);
-                        setShowCenterPlayButton(false);
-                      }
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-[#111111d1] hover:text-white"
-                  >
-                    {isPlaying ? (
-                      <Pause className="h-4 w-4 sm:h-5 sm:w-5" />
-                    ) : (
-                      <Play className="h-4 w-4 sm:h-5 sm:w-5" />
-                    )}
-                  </Button>
-                </motion.div>
-                <div className="flex items-center gap-x-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.8 }}
                   >
                     <Button
-                      onClick={toggleMute}
+                      onClick={() => {
+                        if (type === "mp4") {
+                          togglePlay();
+                        } else if (!isEmbedded) {
+                          setIsEmbedded(true);
+                          setShowCenterPlayButton(false);
+                        }
+                      }}
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-[#111111d1] hover:text-white"
                     >
-                      {isMuted ? (
-                        <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" />
-                      ) : volume > 0.5 ? (
-                        <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                      {isPlaying ? (
+                        <Pause className="h-4 w-4 sm:h-5 sm:w-5" />
                       ) : (
-                        <Volume1 className="h-4 w-4 sm:h-5 sm:w-5" />
+                        <Play className="h-4 w-4 sm:h-5 sm:w-5" />
                       )}
                     </Button>
                   </motion.div>
+                  <div className="flex items-center gap-x-1">
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.8 }}
+                    >
+                      <Button
+                        onClick={toggleMute}
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-[#111111d1] hover:text-white"
+                      >
+                        {isMuted ? (
+                          <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" />
+                        ) : volume > 0.5 ? (
+                          <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                        ) : (
+                          <Volume1 className="h-4 w-4 sm:h-5 sm:w-5" />
+                        )}
+                      </Button>
+                    </motion.div>
 
-                  <div className="w-16 sm:w-24">
-                    <CustomSlider
-                      value={volume * 100}
-                      onChange={handleVolumeChange}
-                    />
+                    <div className="w-16 sm:w-24">
+                      <CustomSlider
+                        value={volume * 100}
+                        onChange={handleVolumeChange}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-0.5 sm:gap-1">
-                {[0.5, 1, 1.5, 2].map((speed) => (
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.8 }}
-                    key={speed}
-                  >
-                    <Button
-                      onClick={() => setSpeed(speed)}
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "text-white hover:bg-[#111111d1] hover:text-white px-1 sm:px-2 text-xs sm:text-sm h-7 sm:h-8",
-                        playbackSpeed === speed && "bg-[#111111d1]"
-                      )}
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  {[0.5, 1, 1.5, 2].map((speed) => (
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.8 }}
+                      key={speed}
                     >
-                      {speed}x
-                    </Button>
-                  </motion.div>
-                ))}
+                      <Button
+                        onClick={() => setSpeed(speed)}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "text-white hover:bg-[#111111d1] hover:text-white px-1 sm:px-2 text-xs sm:text-sm h-7 sm:h-8",
+                          playbackSpeed === speed && "bg-[#111111d1]"
+                        )}
+                      >
+                        {speed}x
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </motion.div>
   );
 };
