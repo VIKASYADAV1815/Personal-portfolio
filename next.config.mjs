@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Use default distDir on Vercel; custom dir only for local Windows dev
-  distDir: process.env.VERCEL ? '.next' : 'next-dist',
+  // Use default distDir everywhere to avoid Windows permission issues
+  distDir: '.next',
   eslint: {
     ignoreDuringBuilds: true,
   },
