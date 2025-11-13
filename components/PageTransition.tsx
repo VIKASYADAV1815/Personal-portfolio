@@ -14,6 +14,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [showGreeting, setShowGreeting] = useState(false);
   const [fadeGreeting, setFadeGreeting] = useState(false);
+  const [shouldGreet, setShouldGreet] = useState(false);
   const pathname = usePathname();
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const visitedPagesRef = useRef<Set<string>>(new Set());
@@ -30,23 +31,10 @@ export default function PageTransition({ children }: PageTransitionProps) {
       } catch {}
 
       if (!alreadyShown) {
-        setShowGreeting(true);
+        setShouldGreet(true);
+        setShowGreeting(false);
         setFadeGreeting(false);
         setIsLoading(false);
-
-        if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
-        if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
-        if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
-
-        greetingTimeoutRef.current.fade = setTimeout(() => setFadeGreeting(true), 3200);
-        greetingTimeoutRef.current.hide = setTimeout(() => {
-          setShowGreeting(false);
-          setIsFirstLoad(false);
-          visitedPagesRef.current.add(pathname);
-          try {
-            localStorage.setItem("greetShown", "1");
-          } catch {}
-        }, 3800);
       } else {
         setShowGreeting(false);
         setFadeGreeting(false);
@@ -81,7 +69,23 @@ export default function PageTransition({ children }: PageTransitionProps) {
       if (loadingTimeoutRef.current) {
         clearTimeout(loadingTimeoutRef.current);
       }
-      if (pathname !== "/") {
+      const isHome = pathname === "/";
+      if (isHome && shouldGreet) {
+        setShowGreeting(true);
+        setFadeGreeting(false);
+        if (greetingTimeoutRef.current.fade) clearTimeout(greetingTimeoutRef.current.fade);
+        if (greetingTimeoutRef.current.hide) clearTimeout(greetingTimeoutRef.current.hide);
+        greetingTimeoutRef.current.fade = setTimeout(() => setFadeGreeting(true), 3200);
+        greetingTimeoutRef.current.hide = setTimeout(() => {
+          setShowGreeting(false);
+          setIsFirstLoad(false);
+          visitedPagesRef.current.add(pathname);
+          setShouldGreet(false);
+          try {
+            localStorage.setItem("greetShown", "1");
+          } catch {}
+        }, 3800);
+      } else if (!isHome) {
         setIsLoading(false);
         setIsFirstLoad(false);
         visitedPagesRef.current.add(pathname);
