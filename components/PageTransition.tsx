@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { Loader } from "@/components/loader/loader";
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -65,20 +66,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
   return (
     <>
-      {isLoading && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#121315] transition-opacity duration-300">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"></div>
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-          </div>
-          {isFirstVisit && (
-            <div className="text-gray-400 text-sm animate-pulse">
-              Loading page for the first time...
-            </div>
-          )}
-        </div>
-      )}
+      {isLoading && !isFirstVisit && <Loader fullscreen backdrop />}
       <div className={`transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}>
         {children}
       </div>

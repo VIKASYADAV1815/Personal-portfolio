@@ -28,7 +28,7 @@ import Profile2 from "@/components/assets/p2.jpg";
 export default function Home() {
   const [hovered, setHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showGreeting, setShowGreeting] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(true);
   const [fadeGreeting, setFadeGreeting] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const textRef = useRef<HTMLParagraphElement | null>(null);
@@ -61,23 +61,25 @@ export default function Home() {
     };
   }, []);
 
-  // Show greeting once per first visit
   useEffect(() => {
     try {
       const alreadyShown = typeof window !== "undefined" && localStorage.getItem("greetShown") === "1";
-      if (!alreadyShown) {
-        setShowGreeting(true);
-        const fadeT = setTimeout(() => setFadeGreeting(true), 3200);
-        const hideT = setTimeout(() => {
-          setShowGreeting(false);
-          localStorage.setItem("greetShown", "1");
-        }, 3800);
-        return () => {
-          clearTimeout(fadeT);
-          clearTimeout(hideT);
-        };
+      if (alreadyShown) {
+        setShowGreeting(false);
+        return;
       }
-    } catch {}
+      const fadeT = setTimeout(() => setFadeGreeting(true), 3200);
+      const hideT = setTimeout(() => {
+        setShowGreeting(false);
+        localStorage.setItem("greetShown", "1");
+      }, 3800);
+      return () => {
+        clearTimeout(fadeT);
+        clearTimeout(hideT);
+      };
+    } catch {
+      setShowGreeting(false);
+    }
   }, []);
 
   // ✅ GSAP Animations (deferred + optimized)
@@ -146,93 +148,71 @@ export default function Home() {
   return (
     <div className="min-h-screen relative bg-[#121315]">
       {showGreeting && (
-        <div
-          className={`fixed inset-0 z-[100] transition-opacity duration-600 ${fadeGreeting ? "opacity-0" : "opacity-100"}`}
-          aria-hidden="true"
-        >
+        <div className={`fixed inset-0 z-[100] transition-opacity duration-600 ${fadeGreeting ? "opacity-0" : "opacity-100"}`} aria-hidden="true">
           <GreetingAnimation />
         </div>
       )}
-      {/* Background */}
-      <div className="absolute inset-0 h-screen">
-        <Bg />
-      </div>
-
-      {/* Hero Section */}
-      <div className="h-screen flex flex-col justify-center items-center text-center px-4 relative z-20">
-        <h1
-          className={`${montserrat.className} text-white font-bold text-2xl sm:text-4xl md:text-6xl lg:text-7xl mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3`}
-        >
-          <span ref={imRef} className={iceland.className}>
-            I'm
-          </span>
-          <Image
-            ref={imageRef}
-            src="https://i.postimg.cc/0NWcNf03/Whats-App-Image-2025-08-18-at-13-24-03-b0364ec7.jpg"
-            alt="Logo"
-            width={200}
-            height={200}
-            className="mx-2 rounded-md opacity-0 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-8px_-8px_16px_rgba(0,0,0,0.3)] hover:shadow-[12px_12px_20px_rgba(0,0,0,0.7),-12px_-12px_20px_rgba(0,0,0,0.4)] transition-shadow duration-300"
-            loading="eager"
-            priority={true}
-            sizes="(max-width: 640px) 128px, (max-width: 1024px) 160px, 200px"
-          />
-          <span ref={nameRef}>
-            <span style={{ color: "#DDFF01" }}>ꪜ𝒾𝒦ꪖ𝚜</span>{" "}
-            <span className={montserrat.className}>𝒴𝒶𝒹𝒶𝓋</span>
-          </span>
-        </h1>
-        <p
-          ref={textRef}
-          className={`${iceland.className} text-white/90 font-semibold mt-5 text-3xl sm:text-4xl md:text-6xl lg:text-9xl w-full border-x border-slate-700`}
-        ></p>
-      </div>
-
-      {/* Glassmorphic Boxes */}
-      <div className="flex flex-col lg:flex-row gap-16 px-4 sm:px-6 md:px-8 lg:px-20 mb-8 lg:mb-12 relative z-20 pt-20">
-        {/* Image Box */}
-        <div
-          className="flex-1 min-h-[20rem] sm:min-h-[24rem] md:min-h-[26rem] lg:min-h-[36rem] border border-slate-700/50 rounded-3xl overflow-hidden relative cursor-pointer"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <Image
-            src={Profile2}
-            alt="Vikas Yadav profile image"
-            fill
-            className={`object-cover w-full h-full absolute top-0 left-0 transition-opacity duration-700 ${
-              hovered ? "opacity-0" : "opacity-100"
-            }`}
-            loading="lazy"
-          />
-          <Image
-            src={Profile1}
-            alt="Vikas Yadav profile image hover"
-            fill
-            className={`object-cover w-full h-full absolute top-0 left-0 transition-opacity duration-700 ${
-              hovered ? "opacity-100" : "opacity-0"
-            }`}
-            loading="lazy"
-          />
-        </div>
-
-        {/* Text Box */}
-        <div className="w-full lg:w-[60%] min-h-[20rem] sm:min-h-[24rem] md:min-h-[28rem] lg:min-h-[36rem] border border-slate-700/50 rounded-3xl p-2 sm:p-2">
-          <div className="text-white">
-            <FlipWordsDemo />
+      {!showGreeting && (
+        <>
+          <div className="absolute inset-0 h-screen">
+            <Bg />
           </div>
-        </div>
-      </div>
-
-      {/* Other Sections */}
-      <div>
-        <Figma />
-      </div>
-
-      <div className="relative z-20">
-        <HeroScrollDemo />
-        <GoogleGeminiEffectDemo />
-      </div>
+          <div className="h-screen flex flex-col justify-center items-center text-center px-4 relative z-20">
+            <h1 className={`${montserrat.className} text-white font-bold text-2xl sm:text-4xl md:text-6xl lg:text-7xl mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3`}>
+              <span ref={imRef} className={iceland.className}>I'm</span>
+              <Image
+                ref={imageRef}
+                src="https://i.postimg.cc/0NWcNf03/Whats-App-Image-2025-08-18-at-13-24-03-b0364ec7.jpg"
+                alt="Logo"
+                width={200}
+                height={200}
+                className="mx-2 rounded-md opacity-0 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-8px_-8px_16px_rgba(0,0,0,0.3)] hover:shadow-[12px_12px_20px_rgba(0,0,0,0.7),-12px_-12px_20px_rgba(0,0,0,0.4)] transition-shadow duration-300"
+                loading="eager"
+                priority={true}
+                sizes="(max-width: 640px) 128px, (max-width: 1024px) 160px, 200px"
+              />
+              <span ref={nameRef}>
+                <span style={{ color: "#DDFF01" }}>ꪜ𝒾𝒦ꪖ𝚜</span> <span className={montserrat.className}>𝒴𝒶𝒹𝒶𝓋</span>
+              </span>
+            </h1>
+            <p ref={textRef} className={`${iceland.className} text-white/90 font-semibold mt-5 text-3xl sm:text-4xl md:text-6xl lg:text-9xl w-full border-x border-slate-700`}></p>
+          </div>
+          <div className="flex flex-col lg:flex-row gap-16 px-4 sm:px-6 md:px-8 lg:px-20 mb-8 lg:mb-12 relative z-20 pt-20">
+            <div
+              className="flex-1 min-h-[20rem] sm:min-h-[24rem] md:min-h-[26rem] lg:min-h-[36rem] border border-slate-700/50 rounded-3xl overflow-hidden relative cursor-pointer"
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
+              <Image
+                src={Profile2}
+                alt="Vikas Yadav profile image"
+                fill
+                className={`object-cover w-full h-full absolute top-0 left-0 transition-opacity duration-700 ${hovered ? "opacity-0" : "opacity-100"}`}
+                loading="lazy"
+              />
+              <Image
+                src={Profile1}
+                alt="Vikas Yadav profile image hover"
+                fill
+                className={`object-cover w-full h-full absolute top-0 left-0 transition-opacity duration-700 ${hovered ? "opacity-100" : "opacity-0"}`}
+                loading="lazy"
+              />
+            </div>
+            <div className="w-full lg:w-[60%] min-h-[20rem] sm:min-h-[24rem] md:min-h-[28rem] lg:min-h-[36rem] border border-slate-700/50 rounded-3xl p-2 sm:p-2">
+              <div className="text-white">
+                <FlipWordsDemo />
+              </div>
+            </div>
+          </div>
+          <div>
+            <Figma />
+          </div>
+          <div className="relative z-20">
+            <HeroScrollDemo />
+            <GoogleGeminiEffectDemo />
+          </div>
+        </>
+      )}
     </div>
   );
 }

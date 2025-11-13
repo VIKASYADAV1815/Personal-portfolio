@@ -78,7 +78,7 @@ export function GreetingAnimation() {
 
       <div className="w-full h-screen flex items-center justify-center px-4">
         <h1
-          className="greeting-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white text-center leading-tight"
+          className="greeting-text text-2xl sm:text-3xl md:text-4xl lg:text-7xl xl:text-6xl font-bold text-white text-center leading-tight"
           style={{
             textShadow:
               "0 0 60px rgba(255, 255, 255, 0.3), 0 0 120px rgba(255, 255, 255, 0.15), 0 0 20px rgba(200, 200, 200, 0.2)",
