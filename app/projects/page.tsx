@@ -1,21 +1,22 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import ImageReveal from "@/components/frontend-project";
+import dynamic from "next/dynamic";
+const ImageReveal = dynamic(() => import("@/components/frontend-project"), { ssr: false });
 import { TracingBeam } from "./tracing-beam";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Leet from "./leet";
 import Lottie from 'react-lottie';
 import Live from "@/components/assets/live.json";
-import Features from "@/components/features-12";
+const Features = dynamic(() => import("@/components/features-12"), { ssr: false });
 import Lenis from '@studio-freight/lenis';
 import { Feature1 } from "./Feature/project1/feature-demo";
 import { Feature2 } from "./Feature/project2/feature-demo";
 import { VideoPlayer } from "@/components/ui/video-player";
-
-import blogvideo from "@/public/videos/blogify.mp4"
-import excelvideo from "@/public/videos/excel.mp4"
+const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "";
+const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "";
+const defaultPoster = "/placeholder.jpg";
 
 const blogifyDocumentation = "/BlogifyDoc.pdf";
 
@@ -317,7 +318,11 @@ const Projects = () => {
           <div className="flex-1 flex flex-col items-center order-1 lg:order-2">
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">01</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto">
-              <VideoPlayer src={blogvideo} className="w-full h-full rounded-lg" />
+              {blogVideoUrl ? (
+                <VideoPlayer src={blogVideoUrl} type="youtube" poster={defaultPoster} className="w-full h-full rounded-lg" />
+              ) : (
+                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} className="w-full h-full rounded-lg" />
+              )}
             </div>
           </div>
         </div>
@@ -393,7 +398,11 @@ const Projects = () => {
           <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left order-1 lg:order-2">
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">02</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto lg:mr-0">
-              <VideoPlayer src={excelvideo} className="w-full h-full rounded-lg" />
+              {excelVideoUrl ? (
+                <VideoPlayer src={excelVideoUrl} type="youtube" poster={defaultPoster} className="w-full h-full rounded-lg" />
+              ) : (
+                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} className="w-full h-full rounded-lg" />
+              )}
             </div>
           </div>
         </div>

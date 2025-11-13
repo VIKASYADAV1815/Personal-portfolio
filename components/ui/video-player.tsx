@@ -45,7 +45,30 @@ const CustomSlider = ({
   );
 };
 
-export const VideoPlayer = ({ src }: { src: string }) => {
+type VideoType = "mp4" | "youtube";
+
+const toYouTubeEmbed = (url: string) => {
+  try {
+    const u = new URL(url);
+    // youtu.be/<id>
+    if (u.hostname.includes("youtu.be")) {
+      const id = u.pathname.replace("/", "");
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    // youtube.com/watch?v=<id>
+    const v = u.searchParams.get("v");
+    if (v) return `https://www.youtube.com/embed/${v}`;
+    // already embed
+    if (u.pathname.startsWith("/embed/")) return url;
+    return url;
+  } catch (e) {
+    return url;
+  }
+};
+
+export const VideoPlayer = (
+  { src, type = "mp4", poster, className }: { src: string; type?: VideoType; poster?: string; className?: string }
+) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -56,6 +79,7 @@ export const VideoPlayer = ({ src }: { src: string }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showCenterPlayButton, setShowCenterPlayButton] = useState(true);
+  const [isEmbedded, setIsEmbedded] = useState(false);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -121,7 +145,10 @@ export const VideoPlayer = ({ src }: { src: string }) => {
 
   return (
     <motion.div
-      className="relative w-full h-[280px] sm:h-[410px] sm:w-[700px] rounded-lg overflow-hidden bg-[#11111198] shadow-[0_0_20px_rgba(0,0,0,0.2)] backdrop-blur-sm"
+      className={cn(
+        "relative w-full h-[280px] sm:h-[410px] sm:w-[700px] rounded-lg overflow-hidden bg-[#11111198] shadow-[0_0_20px_rgba(0,0,0,0.2)] backdrop-blur-sm",
+        className
+      )}
       initial={{ y: 0 }}
       animate={{
         y: [0, -20, 0],
@@ -136,16 +163,43 @@ export const VideoPlayer = ({ src }: { src: string }) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <video
-        ref={videoRef}
-        className="w-full h-full object-cover"
-        onTimeUpdate={handleTimeUpdate}
-        src={src}
-        onClick={togglePlay}
-      />
+      {type === "youtube" ? (
+        isEmbedded ? (
+          <iframe
+            className="w-full h-full"
+            src={`${toYouTubeEmbed(src)}?rel=0&modestbranding=1`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            loading="lazy"
+          />
+        ) : (
+          <button
+            className="w-full h-full relative"
+            onClick={() => setIsEmbedded(true)}
+          >
+            {poster ? (
+              <img src={poster} alt="Video poster" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-black/40" />
+            )}
+          </button>
+        )
+      ) : (
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          onTimeUpdate={handleTimeUpdate}
+          src={src}
+          onClick={togglePlay}
+          preload="metadata"
+          {...(poster ? { poster } : {})}
+        />
+      )}
 
       <AnimatePresence>
-        {showCenterPlayButton && (
+        {showCenterPlayButton && type === "mp4" && (
           <motion.div
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             initial={{ scale: 0, opacity: 0 }}
@@ -170,7 +224,7 @@ export const VideoPlayer = ({ src }: { src: string }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showControls && (
+        {showControls && type === "mp4" && (
           <motion.div
             className="absolute bottom-0 mx-auto w-[90%] sm:max-w-lg left-0 right-0 p-2 sm:p-3 m-2 bg-[#11111198] backdrop-blur-md rounded-xl sm:rounded-2xl"
             initial={{ y: 20, opacity: 0, scale: 0.95 }}
