@@ -105,9 +105,12 @@ export const VideoPlayer = (
   const ytId = type === "youtube" ? getYouTubeId(src) : null;
   const ytThumbCandidates = ytId
     ? [
+        // Prefer high-quality 1280x720 when available
+        `https://img.youtube.com/vi/${ytId}/hq720.jpg`,
         `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`,
         `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`,
         `https://img.youtube.com/vi/${ytId}/0.jpg`,
+        `https://i.ytimg.com/vi/${ytId}/hq720.jpg`,
         `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`,
         `https://i.ytimg.com/vi/${ytId}/sddefault.jpg`,
         `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`,
