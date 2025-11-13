@@ -105,7 +105,9 @@ export const VideoPlayer = (
   const ytId = type === "youtube" ? getYouTubeId(src) : null;
   const ytThumbCandidates = ytId
     ? [
-        `https://i.ytimg.com/vi_webp/${ytId}/maxresdefault.webp`,
+        `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`,
+        `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`,
+        `https://img.youtube.com/vi/${ytId}/0.jpg`,
         `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`,
         `https://i.ytimg.com/vi/${ytId}/sddefault.jpg`,
         `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`,
@@ -233,6 +235,14 @@ export const VideoPlayer = (
                   className="w-full h-full object-cover"
                   onError={() => {
                     setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                  }}
+                  onLoad={(e) => {
+                    const w = e.currentTarget.naturalWidth;
+                    const h = e.currentTarget.naturalHeight;
+                    // If YouTube returns a tiny placeholder (e.g., 120x90), advance to next candidate
+                    if (w <= 200 || h <= 120) {
+                      setThumbIndex((idx) => (idx + 1 < ytThumbCandidates.length ? idx + 1 : idx));
+                    }
                   }}
                 />
               ) : (
