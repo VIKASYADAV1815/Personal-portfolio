@@ -167,7 +167,7 @@ export const VideoPlayer = (
         isEmbedded ? (
           <iframe
             className="w-full h-full"
-            src={`${toYouTubeEmbed(src)}?rel=0&modestbranding=1`}
+            src={`${toYouTubeEmbed(src)}?rel=0&modestbranding=1&autoplay=1&playsinline=1`}
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -177,7 +177,7 @@ export const VideoPlayer = (
         ) : (
           <button
             className="w-full h-full relative"
-            onClick={() => setIsEmbedded(true)}
+            onClick={() => { setIsEmbedded(true); setShowCenterPlayButton(false); }}
           >
             {poster ? (
               <img src={poster} alt="Video poster" className="w-full h-full object-cover" />
@@ -199,7 +199,7 @@ export const VideoPlayer = (
       )}
 
       <AnimatePresence>
-        {showCenterPlayButton && type === "mp4" && (
+        {showCenterPlayButton && (type === "mp4" || (type === "youtube" && !isEmbedded)) && (
           <motion.div
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             initial={{ scale: 0, opacity: 0 }}
@@ -212,7 +212,14 @@ export const VideoPlayer = (
             }}
           >
             <Button
-              onClick={togglePlay}
+              onClick={() => {
+                if (type === "mp4") {
+                  togglePlay();
+                } else {
+                  setIsEmbedded(true);
+                  setShowCenterPlayButton(false);
+                }
+              }}
               variant="ghost"
               size="icon"
               className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/20"
