@@ -144,7 +144,8 @@ export default function Home() {
             height={200}
             className="mx-2 rounded-md opacity-0 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-8px_-8px_16px_rgba(0,0,0,0.3)] hover:shadow-[12px_12px_20px_rgba(0,0,0,0.7),-12px_-12px_20px_rgba(0,0,0,0.4)] transition-shadow duration-300"
             loading="eager"
-            priority={false}
+            priority={true}
+            sizes="(max-width: 640px) 128px, (max-width: 1024px) 160px, 200px"
           />
           <span ref={nameRef}>
             <span style={{ color: "#DDFF01" }}>ꪜ𝒾𝒦ꪖ𝚜</span>{" "}
