@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
+import { GreetingAnimation } from "@/components/pre-loader/pre-loader";
 
 // ✅ Dynamic imports only for heavy components (no duplicate imports now)
 const HeroScrollDemo = dynamic(() => import("@/components/container-scroll-animation-demo"), { ssr: false });
@@ -27,6 +28,8 @@ import Profile2 from "@/components/assets/p2.jpg";
 export default function Home() {
   const [hovered, setHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [fadeGreeting, setFadeGreeting] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const imRef = useRef<HTMLSpanElement | null>(null);
@@ -56,6 +59,25 @@ export default function Home() {
       window.removeEventListener("resize", handleResize);
       lenis.destroy();
     };
+  }, []);
+
+  // Show greeting once per first visit
+  useEffect(() => {
+    try {
+      const alreadyShown = typeof window !== "undefined" && localStorage.getItem("greetShown") === "1";
+      if (!alreadyShown) {
+        setShowGreeting(true);
+        const fadeT = setTimeout(() => setFadeGreeting(true), 3200);
+        const hideT = setTimeout(() => {
+          setShowGreeting(false);
+          localStorage.setItem("greetShown", "1");
+        }, 3800);
+        return () => {
+          clearTimeout(fadeT);
+          clearTimeout(hideT);
+        };
+      }
+    } catch {}
   }, []);
 
   // ✅ GSAP Animations (deferred + optimized)
@@ -123,6 +145,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative bg-[#121315]">
+      {showGreeting && (
+        <div
+          className={`fixed inset-0 z-[100] transition-opacity duration-600 ${fadeGreeting ? "opacity-0" : "opacity-100"}`}
+          aria-hidden="true"
+        >
+          <GreetingAnimation />
+        </div>
+      )}
       {/* Background */}
       <div className="absolute inset-0 h-screen">
         <Bg />
