@@ -25,14 +25,14 @@ export default function PageTransition({ children }: PageTransitionProps) {
     const isFirstVisit = !visitedPagesRef.current.has(pathname);
 
     if (isHome) {
-      let alreadyShown = false;
+      let alreadyShownSession = false;
       let navTriggered = false;
       try {
-        alreadyShown = typeof window !== "undefined" && localStorage.getItem("greetShown") === "1";
+        alreadyShownSession = typeof window !== "undefined" && sessionStorage.getItem("greetShownSession") === "1";
         navTriggered = typeof window !== "undefined" && sessionStorage.getItem("greetOnHomeNav") === "1";
       } catch {}
 
-      if (!alreadyShown && navTriggered) {
+      if (!alreadyShownSession && navTriggered) {
         setShouldGreet(true);
         setShowGreeting(false);
         setFadeGreeting(false);
@@ -84,7 +84,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
           visitedPagesRef.current.add(pathname);
           setShouldGreet(false);
           try {
-            localStorage.setItem("greetShown", "1");
+            sessionStorage.setItem("greetShownSession", "1");
             sessionStorage.removeItem("greetOnHomeNav");
           } catch {}
         }, 3800);
