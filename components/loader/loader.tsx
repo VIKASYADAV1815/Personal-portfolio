@@ -87,7 +87,7 @@ export type LoaderProps = HTMLAttributes<HTMLDivElement> & {
 export const Loader = ({ className, size = 16, fullscreen = false, backdrop = false, ...props }: LoaderProps) => {
   if (fullscreen) {
     return (
-      <div className={cn('fixed inset-0 z-[9999] flex items-center justify-center', backdrop && 'bg-black/40')} {...props}>
+      <div className={cn('fixed inset-0 z-[9999] flex items-center justify-center', backdrop && 'bg-black/60')} {...props}>
         <div className={cn('inline-flex items-center justify-center animate-spin', className)}>
           <LoaderIcon size={size} />
         </div>

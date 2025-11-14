@@ -4,6 +4,7 @@ import { Inter, Chakra_Petch, Goldman } from "next/font/google"
 import "./globals.css"
 import Navbar from "./navbar"
 import PageTransition from "../components/PageTransition"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 const chakraPetch = Chakra_Petch({ 
@@ -40,6 +41,7 @@ export default function RootLayout({
             {children}
           </div>
         </PageTransition>
+        <Analytics />
       </body>
     </html>
   )
