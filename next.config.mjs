@@ -9,8 +9,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // Disable output file tracing to prevent writing 'trace' files on Windows
-  outputFileTracing: false,
 
   images: {
     unoptimized: false,
