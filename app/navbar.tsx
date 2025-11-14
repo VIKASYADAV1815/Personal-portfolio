@@ -31,6 +31,9 @@ export default function Navbar() {
           href="/"
           prefetch={true}
           onMouseEnter={() => preloadRoute("/")}
+          onClick={() => {
+            try { sessionStorage.setItem('greetOnHomeNav', '1'); } catch {}
+          }}
           className="flex-shrink-0 transform hover:scale-110 transition-transform duration-200"
         >
           <svg
@@ -52,6 +55,9 @@ export default function Navbar() {
             href="/"
             prefetch={true}
             onMouseEnter={() => preloadRoute("/")}
+            onClick={() => {
+              try { sessionStorage.setItem('greetOnHomeNav', '1'); } catch {}
+            }}
             className="relative h-6 group hover:text-[#DDFF01] transition-all duration-200 hover:scale-105 text-xs md:text-sm"
           >
             Home

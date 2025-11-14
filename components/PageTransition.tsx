@@ -26,11 +26,13 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
     if (isHome) {
       let alreadyShown = false;
+      let navTriggered = false;
       try {
         alreadyShown = typeof window !== "undefined" && localStorage.getItem("greetShown") === "1";
+        navTriggered = typeof window !== "undefined" && sessionStorage.getItem("greetOnHomeNav") === "1";
       } catch {}
 
-      if (!alreadyShown) {
+      if (!alreadyShown && navTriggered) {
         setShouldGreet(true);
         setShowGreeting(false);
         setFadeGreeting(false);
@@ -83,6 +85,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
           setShouldGreet(false);
           try {
             localStorage.setItem("greetShown", "1");
+            sessionStorage.removeItem("greetOnHomeNav");
           } catch {}
         }, 3800);
       } else if (!isHome) {
