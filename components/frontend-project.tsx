@@ -25,20 +25,20 @@ const visualData: VisualItem[] = [
   },
   {
     key: 2,
-   url: p2.src,
-    label: "Fuffy-Illuiminate",
-    link: "https://fluffy-illuminate-689358.framer.app/"
+    url: p2.src,
+    label: "Framer Portfolio",
+    link: "https://outstanding-need-907903.framer.app/"
   },
   {
     key: 3,
        url: p3.src,
-    label: "Trusting Tour",
-    link: "https://trusting-tours-828272.framer.app/"
+    label: "Flow Builder",
+    link: "https://outstanding-need-907903.framer.app/"
   },
   {
     key: 4,
       url: p4.src,
-    label: "Foolish (SAAS)",
+    label: "Productivity Tracker",
     link: "https://foolish-ice-676325.framer.app/"
   },
 ];

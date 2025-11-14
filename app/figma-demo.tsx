@@ -24,13 +24,13 @@ import Image from "next/image";
 const architecturalWonders: CardItem[] = [
 
  {
-    id: "Trusting Tour",
-    title: "Trusting Tour",
+    id: "Elevate",
+    title: "Elevate",
     description: (
       <div className="flex items-center justify-between w-full" style={{ fontFamily: "Montserrat, sans-serif" }}>
         <div className="flex items-center gap-4">
           <Image src={framer} alt="Figma Logo" width={24} height={24} />
-          <span>Trusting Tour: sleek Framer landing page beautifully showing how paid ads scale businesses with compelling visuals, clear messaging, and intuitive user flow.</span>
+          <span>Elevate: sleek Framer landing page beautifully showing how paid ads scale businesses with compelling visuals, clear messaging, and intuitive user flow.</span>
         </div>
         <a
           href="https://trusting-tours-828272.framer.app/"
@@ -94,14 +94,14 @@ const architecturalWonders: CardItem[] = [
     linkHref: "#",
   },
   {
-    id: "Foolish",
-    title: "Foolish Ice",
+    id: "Flow Builder",
+    title: "Flow Builder",
     description: (
       <div className="flex items-center justify-between w-full" style={{ fontFamily: "Montserrat, sans-serif" }}>
         <div className="flex items-center gap-4">
           <Image src={figma} alt="Figma Logo" width={24} height={24} />
           <span>
-"Foolish" is a vibrant, modern landing page in Framer designed to promote a productivity app that tracks progress and motivates users.</span>
+"Flow Builder" is a vibrant, modern landing page in Framer designed to promote a productivity app that tracks progress and motivates users to complete tasks efficiently.</span>
         </div>
         <a
           href="https://foolish-ice-676325.framer.app/"
@@ -118,16 +118,16 @@ const architecturalWonders: CardItem[] = [
     linkHref: "#",
   },
   {
-    id: "Fluffy Illuminate",
-    title: "Fluffy Illuminate",
+    id: "Framer-Portoflio",
+    title: "Framer-Portoflio",
     description: (
       <div className="flex items-center justify-between w-full" style={{ fontFamily: "Montserrat, sans-serif" }}>
         <div className="flex items-center gap-4">
           <Image src={framer} alt="Figma Logo" width={24} height={24} />
-          <span>Fluffy Illuminate is a sleek, modern UI design created in Framer, featuring smooth animations and a soft, glowing aesthetic for an engaging user experience."</span>
+          <span>"Framer-Portoflio" is a sleek, modern UI design created in Framer, featuring smooth animations and a soft, glowing aesthetic for an engaging user experience.</span>
         </div>
         <a
-          href="https://fluffy-illuminate-689358.framer.app/"
+          href="https://outstanding-need-907903.framer.app/"
           target="_blank"
           rel="noopener noreferrer"
           className="px-3 sm:px-4 py-1.5 sm:py-2 bg-transparent border-2 border-[#DDFF01] rounded-full animate-pulse"
