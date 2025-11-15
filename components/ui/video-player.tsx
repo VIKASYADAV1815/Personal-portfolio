@@ -88,7 +88,7 @@ const getYouTubeThumb = (url: string): string | undefined => {
 };
 
 export const VideoPlayer = (
-  { src, type = "mp4", poster, className, minimal = false }: { src: string; type?: VideoType; poster?: string; className?: string; minimal?: boolean }
+  { src, type = "mp4", poster, className, minimal = false, posterTimestamp }: { src: string; type?: VideoType; poster?: string; className?: string; minimal?: boolean; posterTimestamp?: number }
 ) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -101,6 +101,7 @@ export const VideoPlayer = (
   const [duration, setDuration] = useState(0);
   const [showCenterPlayButton, setShowCenterPlayButton] = useState(true);
   const [isEmbedded, setIsEmbedded] = useState(false);
+  const [generatedPoster, setGeneratedPoster] = useState<string | undefined>(undefined);
   const hideControls = () => setShowControls(false);
   const ytId = type === "youtube" ? getYouTubeId(src) : null;
   const ytThumbCandidates = ytId
@@ -124,6 +125,40 @@ export const VideoPlayer = (
     setUsePoster(!!poster);
     setThumbIndex(0);
   }, [poster, ytId]);
+
+  React.useEffect(() => {
+    if (type !== "mp4") return;
+    if (poster) return;
+    const v = videoRef.current;
+    if (!v) return;
+    const handleLoaded = () => {
+      const ts = typeof posterTimestamp === "number" ? posterTimestamp : 12;
+      const target = isFinite(v.duration) ? Math.min(Math.max(0, ts), Math.max(0, v.duration - 0.1)) : ts;
+      const handleSeeked = () => {
+        const w = v.videoWidth || 1280;
+        const h = v.videoHeight || 720;
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(v, 0, 0, w, h);
+          try {
+            const url = canvas.toDataURL("image/jpeg", 0.85);
+            setGeneratedPoster(url);
+          } catch {}
+        }
+        try { v.currentTime = 0; } catch {}
+        v.removeEventListener("seeked", handleSeeked);
+      };
+      v.addEventListener("seeked", handleSeeked);
+      try { v.currentTime = target; } catch {}
+    };
+    v.addEventListener("loadedmetadata", handleLoaded);
+    return () => {
+      v.removeEventListener("loadedmetadata", handleLoaded);
+    };
+  }, [type, poster, posterTimestamp]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -279,7 +314,7 @@ export const VideoPlayer = (
           onPlay={() => { setIsPlaying(true); setShowCenterPlayButton(false); setShowControls(false); }}
           onPause={() => { setIsPlaying(false); setShowCenterPlayButton(true); setShowControls(true); }}
           preload="metadata"
-          {...(poster ? { poster } : {})}
+          {...((poster || generatedPoster) ? { poster: poster || generatedPoster } : {})}
         />
       )}
 

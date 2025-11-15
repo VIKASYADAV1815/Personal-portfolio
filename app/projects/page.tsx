@@ -319,9 +319,9 @@ const Projects = () => {
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">01</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto">
               {blogVideoUrl ? (
-                <VideoPlayer src={blogVideoUrl} type="youtube" minimal className="w-full h-full rounded-lg" />
+                <VideoPlayer src={blogVideoUrl} type="youtube" className="w-full h-full rounded-lg" />
               ) : (
-                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} minimal className="w-full h-full rounded-lg" />
+                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} className="w-full h-full rounded-lg" />
               )}
             </div>
           </div>
@@ -399,9 +399,9 @@ const Projects = () => {
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">02</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto lg:mr-0">
               {excelVideoUrl ? (
-                <VideoPlayer src={excelVideoUrl} type="mp4" minimal className="w-full h-full rounded-lg" poster={defaultPoster} />
+                <VideoPlayer src={excelVideoUrl} type="mp4" className="w-full h-full rounded-lg" posterTimestamp={12} />
               ) : (
-                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} minimal className="w-full h-full rounded-lg" />
+                <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} className="w-full h-full rounded-lg" />
               )}
             </div>
           </div>
