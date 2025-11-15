@@ -317,8 +317,8 @@ export const VideoPlayer = (
            preload={posterTimestamp ? "auto" : "metadata"}
            playsInline
            onError={() => {
-             if (source !== "/videos/hero.mp4") {
-               setSource("/videos/hero.mp4");
+             if (source !== "/videos/blogify.mp4") {
+               setSource("/videos/blogify.mp4");
                setGeneratedPoster(undefined);
              }
            }}
