@@ -15,7 +15,7 @@ import { Feature1 } from "./Feature/project1/feature-demo";
 import { Feature2 } from "./Feature/project2/feature-demo";
 import { VideoPlayer } from "@/components/ui/video-player";
 const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "https://youtu.be/Iun9uUHJKcc";
-const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "https://youtu.be/1dh6KQUdUj8";
+const excelVideoUrl = process.env.NEXT_PUBLIC_EXCEL_VIDEO_URL ?? "/videos/excel.mp4";
 const defaultPoster = "/placeholder.jpg";
 
 const blogifyDocumentation = "/BlogifyDoc.pdf";
@@ -399,7 +399,7 @@ const Projects = () => {
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">02</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto lg:mr-0">
               {excelVideoUrl ? (
-                <VideoPlayer src={excelVideoUrl} type="youtube" minimal className="w-full h-full rounded-lg" poster={"https://i.ytimg.com/vi/-SGM1p_QOZo/hq720.jpg"} />
+                <VideoPlayer src={excelVideoUrl} type="mp4" minimal className="w-full h-full rounded-lg" poster={defaultPoster} />
               ) : (
                 <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} minimal className="w-full h-full rounded-lg" />
               )}
