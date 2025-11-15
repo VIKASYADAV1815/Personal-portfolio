@@ -319,7 +319,7 @@ const Projects = () => {
             <h1 className="block lg:hidden text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4 self-start">01</h1>
             <div className="w-full max-w-[600px] lg:max-w-[700px] mx-auto">
               {blogVideoUrl ? (
-                <VideoPlayer src={blogVideoUrl} type="youtube" className="w-full h-full rounded-lg" />
+                <VideoPlayer src={blogVideoUrl} type="youtube" minimal className="w-full h-full rounded-lg" />
               ) : (
                 <VideoPlayer src={"/videos/hero.mp4"} type="mp4" poster={defaultPoster} className="w-full h-full rounded-lg" />
               )}
