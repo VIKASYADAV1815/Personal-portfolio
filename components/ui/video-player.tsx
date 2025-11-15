@@ -91,6 +91,7 @@ export const VideoPlayer = (
   { src, type = "mp4", poster, className, minimal = false, posterTimestamp }: { src: string; type?: VideoType; poster?: string; className?: string; minimal?: boolean; posterTimestamp?: number }
 ) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [source, setSource] = useState(src);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
@@ -308,14 +309,21 @@ export const VideoPlayer = (
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          onTimeUpdate={handleTimeUpdate}
-          src={src}
-          onClick={togglePlay}
-          onPlay={() => { setIsPlaying(true); setShowCenterPlayButton(false); setShowControls(false); }}
-          onPause={() => { setIsPlaying(false); setShowCenterPlayButton(true); setShowControls(true); }}
-          preload="metadata"
-          {...((poster || generatedPoster) ? { poster: poster || generatedPoster } : {})}
-        />
+           onTimeUpdate={handleTimeUpdate}
+           src={source}
+           onClick={togglePlay}
+           onPlay={() => { setIsPlaying(true); setShowCenterPlayButton(false); setShowControls(false); }}
+           onPause={() => { setIsPlaying(false); setShowCenterPlayButton(true); setShowControls(true); }}
+           preload={posterTimestamp ? "auto" : "metadata"}
+           playsInline
+           onError={() => {
+             if (source !== "/videos/hero.mp4") {
+               setSource("/videos/hero.mp4");
+               setGeneratedPoster(undefined);
+             }
+           }}
+           {...((poster || generatedPoster) ? { poster: poster || generatedPoster } : {})}
+         />
       )}
 
       <AnimatePresence>
