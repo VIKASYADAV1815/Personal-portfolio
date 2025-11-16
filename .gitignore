@@ -10,7 +10,6 @@
 
 # large media excluded from repo (use external hosting or Git LFS)
 public/videos/blogify.mp4
-public/videos/excel.mp4
 
 # production
 /build

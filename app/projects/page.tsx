@@ -1,21 +1,20 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
-const ImageReveal = dynamic(() => import("@/components/frontend-project"), { ssr: false });
+import ImageReveal from "@/components/frontend-project";
 import { TracingBeam } from "./tracing-beam";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Leet from "./leet";
 import Lottie from 'react-lottie';
 import Live from "@/components/assets/live.json";
-const Features = dynamic(() => import("@/components/features-12"), { ssr: false });
+import Features from "@/components/features-12";
 import Lenis from '@studio-freight/lenis';
 import { Feature1 } from "./Feature/project1/feature-demo";
 import { Feature2 } from "./Feature/project2/feature-demo";
 import { VideoPlayer } from "@/components/ui/video-player";
 const blogVideoUrl = process.env.NEXT_PUBLIC_BLOGIFY_VIDEO_URL ?? "https://youtu.be/Iun9uUHJKcc";
-const excelVideoUrl = "/videos/excel.mp4?v=2";
+const excelVideoUrl = "/videos/excel.mp4?v=3";
 const defaultPoster = "/placeholder.jpg";
 
 const blogifyDocumentation = "/BlogifyDoc.pdf";

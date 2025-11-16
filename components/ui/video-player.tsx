@@ -316,12 +316,6 @@ export const VideoPlayer = (
            onPause={() => { setIsPlaying(false); setShowCenterPlayButton(true); setShowControls(true); }}
            preload={posterTimestamp ? "auto" : "metadata"}
            playsInline
-           onError={() => {
-             if (source !== "/videos/blogify.mp4") {
-               setSource("/videos/blogify.mp4");
-               setGeneratedPoster(undefined);
-             }
-           }}
            {...((poster || generatedPoster) ? { poster: poster || generatedPoster } : {})}
          />
       )}
